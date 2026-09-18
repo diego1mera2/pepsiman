@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PEPSIMAN STORE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: #0a0a0a;
+    --foreground: #f5f5f5;
+    --card: #141414;
+    --card-foreground: #f5f5f5;
+    --primary: #f5f5f5;
+    --primary-foreground: #0a0a0a;
+    --secondary: #1f1f1f;
+    --secondary-foreground: #a3a3a3;
+    --muted: #1a1a1a;
+    --muted-foreground: #737373;
+    --accent: #ffffff;
+    --accent-foreground: #000000;
+    --border: #2a2a2a;
+    --ring: #f5f5f5;
+    --font-display: 'Anton', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: none; }
+  *::-webkit-scrollbar { display: none; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  img { max-width: 100%; display: block; }
+
+  .font-display { font-family: var(--font-display); letter-spacing: 0.02em; }
+  .font-mono { font-family: var(--font-mono); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; border: none; cursor: pointer; background: none; color: inherit; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: #000000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .navbar-inner {
+    max-width: 1280px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo { font-family: var(--font-display); color: #fff; font-size: 24px; letter-spacing: 0.15em; }
+
+  .nav-links { display: none; align-items: center; gap: 32px; }
+  .nav-links a {
+    color: rgba(255,255,255,0.6); font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.2em; transition: color .2s;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  .nav-icons { display: flex; align-items: center; gap: 16px; }
+  .icon-btn { color: rgba(255,255,255,0.6); transition: color .2s; position: relative; display: flex; }
+  .icon-btn:hover { color: #fff; }
+  .cart-count {
+    position: absolute; top: -4px; right: -4px; width: 16px; height: 16px;
+    background: #fff; color: #000; font-family: var(--font-mono); font-size: 9px;
+    font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .hamburger { display: flex; color: #fff; }
+
+  .mobile-menu {
+    display: none; background: #000; border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 24px; flex-direction: column; gap: 20px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { color: #fff; font-family: var(--font-mono); letter-spacing: 0.2em; font-size: 14px; }
+
+  @media (min-width: 768px) {
+    .nav-links { display: flex; }
+    .hamburger { display: none; }
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative; min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; background: #000; overflow: hidden; padding-top: 64px;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0; opacity: 0.05;
+    background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-diagonal {
+    position: absolute; bottom: 0; right: 0; width: 50%; height: 100%;
+    background: rgba(255,255,255,0.03);
+    clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 10; max-width: 1280px; margin: 0 auto; padding: 0 24px;
+    display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center;
+  }
+  .hero-eyebrow { font-family: var(--font-mono); color: rgba(255,255,255,0.4); font-size: 12px; letter-spacing: 0.3em; margin-bottom: 24px; }
+  .hero-title { font-family: var(--font-display); color: #fff; line-height: 0.9; font-size: clamp(4rem, 12vw, 9rem); }
+  .hero-title .outline {
+    color: rgba(255,255,255,0.1);
+    -webkit-text-stroke: 1px white;
+  }
+  .hero-desc { color: rgba(255,255,255,0.5); font-size: 18px; margin: 32px 0 40px; max-width: 420px; line-height: 1.6; }
+  .hero-buttons { display: flex; flex-wrap: wrap; gap: 16px; }
+  .btn-solid {
+    background: #fff; color: #000; font-family: var(--font-mono); font-weight: 700;
+    font-size: 12px; letter-spacing: 0.2em; padding: 16px 32px; transition: background .2s;
+  }
+  .btn-solid:hover { background: rgba(255,255,255,0.9); }
+  .btn-outline {
+    border: 1px solid rgba(255,255,255,0.2); color: #fff; font-family: var(--font-mono);
+    font-weight: 700; font-size: 12px; letter-spacing: 0.2em; padding: 16px 32px; transition: border-color .2s;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.6); }
+
+  .hero-stats { display: flex; gap: 32px; margin-top: 56px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .stat-value { font-family: var(--font-display); color: #fff; font-size: 24px; }
+  .stat-label { font-family: var(--font-mono); color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.2em; margin-top: 4px; }
+
+  .hero-image-wrap { position: relative; display: flex; justify-content: center; }
+  .hero-image-inner { position: relative; width: 288px; max-width: 100%; }
+  .hero-glow { position: absolute; inset: 0; background: rgba(255,255,255,0.05); filter: blur(60px); transform: scale(1.1); }
+  .hero-img { position: relative; z-index: 10; width: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.3) brightness(0.95); }
+  .hero-year-badge {
+    position: absolute; top: -16px; right: -16px; background: #fff; color: #000;
+    width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .hero-year-badge span:first-child { font-family: var(--font-display); font-size: 12px; line-height: 1; }
+  .hero-year-badge span:last-child { font-family: var(--font-display); font-size: 20px; line-height: 1; }
+
+  .ticker {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    border-top: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+  }
+  .ticker-track {
+    display: flex; align-items: center; gap: 48px; padding: 12px 0;
+    white-space: nowrap; width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+  .ticker-track span { font-family: var(--font-mono); color: rgba(255,255,255,0.2); font-size: 12px; letter-spacing: 0.2em; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  @media (min-width: 768px) {
+    .hero-content { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    display: flex; flex-direction: column; gap: 24px; justify-content: space-between; margin-bottom: 56px;
+  }
+  .section-eyebrow { font-family: var(--font-mono); color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 0.3em; margin-bottom: 12px; }
+  .section-title { font-family: var(--font-display); color: #fff; line-height: 0.95; font-size: clamp(2.5rem, 6vw, 5rem); }
+  @media (min-width: 768px) { .section-header { flex-direction: row; align-items: flex-end; } }
+
+  /* ===== PRODUCTS ===== */
+  .products-section { background: #000; padding: 96px 0; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filter-btn {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); transition: all .2s;
+  }
+  .filter-btn:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); }
+  .filter-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+  .product-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1px; background: rgba(255,255,255,0.05);
+  }
+  @media (min-width: 640px) { .product-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .product-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .product-card { background: #000; }
+  .product-card-inner {
+    background: #0f0f0f; border: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; height: 100%; transition: border-color .3s;
+  }
+  .product-card-inner:hover { border-color: rgba(255,255,255,0.25); }
+
+  .product-img-wrap { position: relative; overflow: hidden; background: #0a0a0a; aspect-ratio: 4/5; }
+  .product-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(100%) contrast(1.25) brightness(0.85);
+    transition: transform .5s;
+  }
+  .product-card-inner:hover .product-img-wrap img { transform: scale(1.05); }
+
+  .badge {
+    position: absolute; top: 12px; left: 12px; background: #fff; color: #000;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.2em; padding: 4px 8px;
+  }
+  .volume-tag {
+    position: absolute; bottom: 12px; right: 12px; border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+    padding: 4px 8px; background: rgba(0,0,0,0.6);
+  }
+
+  .product-body { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+  .product-name { font-family: var(--font-display); color: #fff; font-size: 20px; margin-bottom: 4px; }
+  .product-desc { color: rgba(255,255,255,0.4); font-size: 12px; line-height: 1.6; margin-bottom: 16px; flex: 1; }
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .product-price { font-family: var(--font-mono); color: #fff; font-size: 18px; font-weight: 700; }
+  .add-btn {
+    font-family: var(--font-mono); font-weight: 700; font-size: 10px; letter-spacing: 0.2em;
+    padding: 8px 16px; background: #fff; color: #000; transition: all .2s;
+  }
+  .add-btn:hover { background: rgba(255,255,255,0.9); }
+  .add-btn.added { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+
+  .view-all-wrap { margin-top: 48px; display: flex; justify-content: center; }
+  .view-all-btn {
+    border: 1px solid rgba(255,255,255,0.2); color: #fff; font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 0.2em; padding: 16px 40px; transition: all .2s;
+  }
+  .view-all-btn:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); }
+
+  /* ===== CATEGORIES ===== */
+  .categories-section { background: #080808; padding: 96px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .categories-title-wrap { margin-bottom: 48px; }
+
+  .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.05); }
+  @media (min-width: 768px) { .category-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .category-card {
+    position: relative; background: #000; overflow: hidden; cursor: pointer; aspect-ratio: 1/1;
+  }
+  .category-card img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(100%) brightness(0.3); transition: transform .5s;
+  }
+  .category-card:hover img { transform: scale(1.1); }
+  .category-overlay { position: absolute; inset: 0; transition: background-color .2s; }
+  .category-card:hover .category-overlay { background: rgba(255,255,255,0.05); }
+  .category-content {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; padding: 16px;
+  }
+  .category-name { font-family: var(--font-display); color: #fff; font-size: 22px; margin-bottom: 8px; }
+  .category-count { font-family: var(--font-mono); color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.2em; }
+  .category-line {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    width: 32px; height: 1px; background: rgba(255,255,255,0.2); transition: all .3s;
+  }
+  .category-card:hover .category-line { width: 64px; background: rgba(255,255,255,0.6); }
+
+  /* ===== PROMO ===== */
+  .promo-section { position: relative; padding: 96px 0; overflow: hidden; background: #fff; }
+  .promo-bg {
+    position: absolute; inset: 0; opacity: 0.05;
+    background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .promo-grid { position: relative; z-index: 10; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+  @media (min-width: 768px) { .promo-grid { grid-template-columns: 1fr 1fr; } }
+
+  .promo-eyebrow { font-family: var(--font-mono); color: rgba(0,0,0,0.4); font-size: 12px; letter-spacing: 0.3em; margin-bottom: 16px; }
+  .promo-title { font-family: var(--font-display); color: #000; line-height: 0.9; margin-bottom: 24px; font-size: clamp(3rem, 8vw, 7rem); }
+  .promo-title .outline { color: rgba(0,0,0,0.1); -webkit-text-stroke: 2px black; }
+  .promo-desc { color: rgba(0,0,0,0.5); font-size: 18px; margin-bottom: 32px; max-width: 380px; line-height: 1.6; }
+  .promo-price-row { display: flex; align-items: center; gap: 24px; }
+  .old-price { font-family: var(--font-mono); color: rgba(0,0,0,0.3); font-size: 12px; text-decoration: line-through; }
+  .new-price { font-family: var(--font-display); color: #000; font-size: 36px; }
+  .promo-btn {
+    background: #000; color: #fff; font-family: var(--font-mono); font-weight: 700;
+    font-size: 12px; letter-spacing: 0.2em; padding: 16px 32px; transition: background .2s;
+  }
+  .promo-btn:hover { background: rgba(0,0,0,0.8); }
+
+  .promo-image-wrap { position: relative; }
+  .promo-image-wrap img { width: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2); }
+  .savings-badge {
+    position: absolute; bottom: -16px; left: -16px; background: #000; color: #fff; padding: 12px 20px;
+  }
+  .savings-badge p:first-child { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.5); }
+  .savings-badge p:last-child { font-family: var(--font-display); font-size: 24px; }
+
+  /* ===== TESTIMONIALS ===== */
+  .testimonials-section { background: #000; padding: 96px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+  .testimonials-header {
+    margin-bottom: 48px; display: flex; flex-direction: column; gap: 16px;
+    justify-content: space-between;
+  }
+  @media (min-width: 768px) { .testimonials-header { flex-direction: row; align-items: flex-end; } }
+  .rating-summary { font-family: var(--font-mono); color: rgba(255,255,255,0.2); font-size: 14px; }
+
+  .testimonial-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: rgba(255,255,255,0.05); }
+  @media (min-width: 768px) { .testimonial-grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .testimonial-card { background: #0a0a0a; padding: 32px; }
+  .stars { font-family: var(--font-mono); color: rgba(255,255,255,0.2); font-size: 12px; letter-spacing: 0.2em; margin-bottom: 16px; }
+  .testimonial-text { color: rgba(255,255,255,0.7); font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+  .testimonial-name { font-family: var(--font-mono); color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.2em; }
+
+  /* ===== FOOTER ===== */
+  .footer { background: #050505; border-top: 1px solid rgba(255,255,255,0.05); padding: 64px 24px; }
+  .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 56px; }
+  @media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+  .footer-brand { grid-column: span 2; }
+  @media (min-width: 768px) { .footer-brand { grid-column: span 1; } }
+  .footer-logo { font-family: var(--font-display); color: #fff; font-size: 30px; margin-bottom: 16px; letter-spacing: 0.2em; }
+  .footer-tagline { color: rgba(255,255,255,0.3); font-size: 14px; line-height: 1.6; max-width: 320px; }
+  .footer-col-title { font-family: var(--font-mono); color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.25em; margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-col a { color: rgba(255,255,255,0.4); font-size: 14px; transition: color .2s; }
+  .footer-col a:hover { color: #fff; }
+
+  .footer-bottom {
+    display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: space-between;
+    padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  @media (min-width: 768px) { .footer-bottom { flex-direction: row; } }
+  .copyright { font-family: var(--font-mono); color: rgba(255,255,255,0.15); font-size: 10px; letter-spacing: 0.2em; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-family: var(--font-mono); color: rgba(255,255,255,0.15); font-size: 10px; letter-spacing: 0.2em; transition: color .2s; }
+  .footer-links a:hover { color: rgba(255,255,255,0.4); }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">PEPSIMAN</div>
+    <div class="nav-links">
+      <a href="#">TIENDA</a>
+      <a href="#">CLÁSICOS</a>
+      <a href="#">ZERO</a>
+      <a href="#">PACKS</a>
+      <a href="#">NOSOTROS</a>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" aria-label="Buscar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Carrito">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-count">3</span>
+      </button>
+      <button class="hamburger" id="menuToggle" aria-label="Menú">
+        <svg id="iconOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        <svg id="iconClose" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#">TIENDA</a>
+    <a href="#">CLÁSICOS</a>
+    <a href="#">ZERO</a>
+    <a href="#">PACKS</a>
+    <a href="#">NOSOTROS</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-diagonal"></div>
+  <div class="hero-content">
+    <div>
+      <p class="hero-eyebrow">— EL HÉROE DE LA SED —</p>
+      <h1 class="hero-title font-display">PEPSI<br><span class="outline">MAN</span></h1>
+      <p class="hero-desc">El único héroe capaz de saciar tu sed. Sabores legendarios para campeones sin límites.</p>
+      <div class="hero-buttons">
+        <button class="btn-solid">VER PRODUCTOS →</button>
+        <button class="btn-outline">NUESTRA HISTORIA</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-value">50+</div><div class="stat-label">SABORES</div></div>
+        <div><div class="stat-value">12M</div><div class="stat-label">FANS</div></div>
+        <div><div class="stat-value">100%</div><div class="stat-label">LEGENDARIO</div></div>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <div class="hero-image-inner">
+        <div class="hero-glow"></div>
+        <img class="hero-img" src="https://images.unsplash.com/photo-1592892111425-15e04305f961?w=600&h=800&fit=crop&auto=format" alt="Pepsi can hero">
+        <div class="hero-year-badge"><span>DESDE</span><span>1993</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-track">
+      <span>PEPSI ORIGINAL &nbsp;·&nbsp; PEPSI BLACK &nbsp;·&nbsp; PEPSI ICE &nbsp;·&nbsp; PEPSIMAN STORE &nbsp;·&nbsp;</span>
+      <span>PEPSI ORIGINAL &nbsp;·&nbsp; PEPSI BLACK &nbsp;·&nbsp; PEPSI ICE &nbsp;·&nbsp; PEPSIMAN STORE &nbsp;·&nbsp;</span>
+      <span>PEPSI ORIGINAL &nbsp;·&nbsp; PEPSI BLACK &nbsp;·&nbsp; PEPSI ICE &nbsp;·&nbsp; PEPSIMAN STORE &nbsp;·&nbsp;</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="productos">
+  <div class="wrap">
+    <div class="section-header">
+      <div>
+        <p class="section-eyebrow">— CATÁLOGO —</p>
+        <h2 class="section-title font-display">NUESTROS<br>PRODUCTOS</h2>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter-btn active">TODOS</button>
+        <button class="filter-btn">500ML</button>
+        <button class="filter-btn">1L</button>
+        <button class="filter-btn">PACKS</button>
+        <button class="filter-btn">ZERO</button>
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1592892111425-15e04305f961?w=600&h=700&fit=crop&auto=format" alt="Pepsi Original">
+            <span class="badge">BESTSELLER</span>
+            <span class="volume-tag">500ml</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI ORIGINAL</h3>
+            <p class="product-desc">La cola original con sabor inigualable.</p>
+            <div class="product-footer">
+              <span class="product-price">$2.99</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=600&h=700&fit=crop&auto=format" alt="Pepsi Black">
+            <span class="badge">ZERO AZÚCAR</span>
+            <span class="volume-tag">500ml</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI BLACK</h3>
+            <p class="product-desc">Todo el sabor, sin azúcar. Máximo rendimiento.</p>
+            <div class="product-footer">
+              <span class="product-price">$3.49</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&h=700&fit=crop&auto=format" alt="Pepsi Ice">
+            <span class="badge">EDICIÓN FRÍA</span>
+            <span class="volume-tag">500ml</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI ICE</h3>
+            <p class="product-desc">Frescura ártica en cada sorbo.</p>
+            <div class="product-footer">
+              <span class="product-price">$3.29</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1554866585-cd94860890b7?w=600&h=700&fit=crop&auto=format" alt="Pepsi Wild">
+            <span class="badge">NUEVO</span>
+            <span class="volume-tag">500ml</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI WILD</h3>
+            <p class="product-desc">Sabor salvaje para espíritus libres.</p>
+            <div class="product-footer">
+              <span class="product-price">$3.19</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1716800586014-fea19e9453fb?w=600&h=700&fit=crop&auto=format" alt="Pepsi Mega Can">
+            <span class="badge">TAMAÑO XL</span>
+            <span class="volume-tag">1L</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI MEGA CAN</h3>
+            <p class="product-desc">Para los héroes que nunca paran.</p>
+            <div class="product-footer">
+              <span class="product-price">$5.99</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-inner">
+          <div class="product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1674176508097-463b009c6004?w=600&h=700&fit=crop&auto=format" alt="Pepsi Party Pack">
+            <span class="badge">PACK</span>
+            <span class="volume-tag">6×330ml</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name font-display">PEPSI PARTY PACK</h3>
+            <p class="product-desc">Comparte la energía del héroe.</p>
+            <div class="product-footer">
+              <span class="product-price">$9.99</span>
+              <button class="add-btn" onclick="addToCart(this)">AÑADIR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-all-wrap">
+      <button class="view-all-btn">VER TODOS LOS PRODUCTOS →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <div class="wrap">
+    <div class="categories-title-wrap">
+      <p class="section-eyebrow">— COLECCIONES —</p>
+      <h2 class="section-title font-display" style="font-size:clamp(2rem,5vw,4rem)">EXPLORA POR<br>CATEGORÍA</h2>
+    </div>
+    <div class="category-grid">
+      <div class="category-card">
+        <img src="https://images.unsplash.com/photo-1605548230624-8d2d0419c517?w=600&h=400&fit=crop&auto=format" alt="Clásicos">
+        <div class="category-overlay"></div>
+        <div class="category-content">
+          <h3 class="category-name">CLÁSICOS</h3>
+          <span class="category-count">12 PRODUCTOS</span>
+        </div>
+        <div class="category-line"></div>
+      </div>
+      <div class="category-card">
+        <img src="https://images.unsplash.com/photo-1592892111425-15e04305f961?w=600&h=400&fit=crop&auto=format" alt="Zero Azúcar">
+        <div class="category-overlay"></div>
+        <div class="category-content">
+          <h3 class="category-name">ZERO AZÚCAR</h3>
+          <span class="category-count">8 PRODUCTOS</span>
+        </div>
+        <div class="category-line"></div>
+      </div>
+      <div class="category-card">
+        <img src="https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?w=600&h=400&fit=crop&auto=format" alt="Ediciones">
+        <div class="category-overlay"></div>
+        <div class="category-content">
+          <h3 class="category-name">EDICIONES</h3>
+          <span class="category-count">5 PRODUCTOS</span>
+        </div>
+        <div class="category-line"></div>
+      </div>
+      <div class="category-card">
+        <img src="https://images.unsplash.com/photo-1674176508097-463b009c6004?w=600&h=400&fit=crop&auto=format" alt="Packs">
+        <div class="category-overlay"></div>
+        <div class="category-content">
+          <h3 class="category-name">PACKS</h3>
+          <span class="category-count">6 PRODUCTOS</span>
+        </div>
+        <div class="category-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO -->
+<section class="promo-section">
+  <div class="promo-bg"></div>
+  <div class="wrap promo-grid">
+    <div>
+      <p class="promo-eyebrow">— OFERTA LIMITADA —</p>
+      <h2 class="promo-title font-display">PACK<br>HÉROE<br><span class="outline">2024</span></h2>
+      <p class="promo-desc">El pack definitivo del fan. 6 latas, 3 sabores, un solo destino: la victoria.</p>
+      <div class="promo-price-row">
+        <div>
+          <p class="old-price">$14.99</p>
+          <p class="new-price font-display">$9.99</p>
+        </div>
+        <button class="promo-btn">COMPRAR AHORA →</button>
+      </div>
+    </div>
+    <div class="promo-image-wrap">
+      <img src="https://images.unsplash.com/photo-1674176508097-463b009c6004?w=700&h=500&fit=crop&auto=format" alt="Pack de Pepsi">
+      <div class="savings-badge">
+        <p>AHORRO</p>
+        <p class="font-display">33% OFF</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="wrap">
+    <div class="testimonials-header">
+      <div>
+        <p class="section-eyebrow">— COMUNIDAD —</p>
+        <h2 class="section-title font-display" style="font-size:clamp(2rem,4vw,3.5rem)">LO QUE DICEN<br>LOS HÉROES</h2>
+      </div>
+      <div class="rating-summary">4.9 / 5.0 ★</div>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"La única bebida que me acompaña en cada entrenamiento."</p>
+        <p class="testimonial-name">— ALEX M.</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Sabor legendario. Cada lata es una experiencia diferente."</p>
+        <p class="testimonial-name">— SARA K.</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"El pack héroe es increíble. Relación calidad-precio sin igual."</p>
+        <p class="testimonial-name">— MARCO R.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">PEPSIMAN</div>
+        <p class="footer-tagline">El héroe de la sed. Bebidas legendarias para mentes extraordinarias.</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">TIENDA</p>
+        <ul>
+          <li><a href="#">Clásicos</a></li>
+          <li><a href="#">Zero Azúcar</a></li>
+          <li><a href="#">Ediciones</a></li>
+          <li><a href="#">Packs</a></li>
+          <li><a href="#">Accesorios</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">SOPORTE</p>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Envíos</a></li>
+          <li><a href="#">Devoluciones</a></li>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">Mi Cuenta</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">MARCA</p>
+        <ul>
+          <li><a href="#">Historia</a></li>
+          <li><a href="#">Pepsiman</a></li>
+          <li><a href="#">Prensa</a></li>
+          <li><a href="#">Colaboraciones</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">© 2024 PEPSIMAN STORE. TODOS LOS DERECHOS RESERVADOS.</p>
+      <div class="footer-links">
+        <a href="#">PRIVACIDAD</a>
+        <a href="#">TÉRMINOS</a>
+        <a href="#">COOKIES</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const iconOpen = document.getElementById('iconOpen');
+  const iconClose = document.getElementById('iconClose');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    iconOpen.style.display = isOpen ? 'none' : 'block';
+    iconClose.style.display = isOpen ? 'block' : 'none';
+  });
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Add to cart animation
+  function addToCart(btn) {
+    btn.textContent = '✓ AÑADIDO';
+    btn.classList.add('added');
+    setTimeout(() => {
+      btn.textContent = 'AÑADIR';
+      btn.classList.remove('added');
+    }, 1500);
+  }
+</script>
+</body>
+</html>
